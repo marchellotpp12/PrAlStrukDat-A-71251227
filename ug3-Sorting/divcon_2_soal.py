@@ -15,7 +15,11 @@ mahasiswa = [
 
 # Menghitung rata-rata nilai setiap mahasiswa
 for mhs in mahasiswa:
-    mhs["rata_rata"] = sum(mhs["nilai"]) / len (mhs["nilai"])
+    total = 0
+    for nilai in mhs["nilai"]:
+        total+= nilai
+        
+    mhs["rata_rata"] = total / len(mhs["nilai"])
 
 
 # Divide and Conquer - Merge Sort
@@ -24,26 +28,34 @@ def merge_sort(data):
         return data
     
     tengah = len(data) // 2
-    kiri = data[:tengah]
-    kanan = data[tengah:]
 
-    kiri = merge_sort(kiri)
-    kanan = merge_sort(kanan)
+    kiri = merge_sort(data[:tengah])
+    kanan = merge_sort(data[tengah:])
+
+    return merge(kiri, kanan)
 
 def merge(kiri, kanan):
     hasil = []
-    i = j = 0
+
+    i = 0 
+    j = 0
 
     while i < len(kiri) and j < len(kanan):  
-        if kiri[i]["rata_rata"] <= kanan[j]["rata_rata"]:  
+        if kiri[i]["rata_rata"] >= kanan[j]["rata_rata"]:  
             hasil.append(kiri[i])  
             i += 1  
         else:  
             hasil.append(kanan[j])  
             j += 1  
 
-    hasil.extend(kiri[i:])  
-    hasil.extend(kanan[j:])  
+    while i < len(kiri):
+        hasil.append(kiri[i])
+        i += 1
+
+    while j < len(kanan):
+        hasil.append(kanan[j])
+        j += 1
+
     return hasil    
 
 
@@ -56,15 +68,24 @@ rata_rata_keseluruhan = total_rata_rata / len(mahasiswa)
 
 # Mengurutkan mahasiswa menggunakan Merge Sort
 mahasiswa_urut = merge_sort(mahasiswa)
+# atas = []
+# bawah = []
+# for mhs in mahasiswa_urut:
+#     if mhs ["rata_rata"] >= rata_rata_keseluruhan:
+#         atas.append(mhs)
+#     else:
+#         bawah.append(mhs)
+
 
 
 # Menampilkan hasil rata-rata keseluruhan
+print("rata rata keseluruhan:", rata_rata_keseluruhan)
 
 print("\n=== DI ATAS / SAMA DENGAN RATA-RATA ===")
 
 nomor = 1
 
-for mhs in mahasiswa:
+for mhs in mahasiswa_urut:
     if mhs ["rata_rata"] >= rata_rata_keseluruhan:
         print(
             nomor,
@@ -80,9 +101,9 @@ for mhs in mahasiswa:
 
 
 print("\n=== DI BAWAH RATA-RATA ===")
-omor = 1
+nomor = 1
 
-for mhs in mahasiswa:
+for mhs in mahasiswa_urut:
     if mhs ["rata_rata"] < rata_rata_keseluruhan:
         print(
             nomor,
